@@ -27,12 +27,19 @@ public class KeyGenerators{
     }
 
     public static void main(String[] args) {
+        
         byte[] gen = Utils.generateBytes(32);
+        /* 
         System.out.print("{");
         
         for (byte i : gen){
             System.out.print(i + ", ");
         }
         System.out.print("}");
+        */
+        long start = System.currentTimeMillis();
+        getMainKey(gen, gen);
+        long diff = System.currentTimeMillis() - start;
+        System.out.println("Время выполнения PBKDF2: " + diff + " миллисекунд");
     }
 }
