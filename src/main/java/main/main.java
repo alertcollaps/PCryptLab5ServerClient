@@ -14,13 +14,7 @@ import Manager.KeyManager;
 public class main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.print("Please enter your master password: ");
-        String masterPassword = in.nextLine();
         
-        FileManager.init();
-        byte[] salt = FileManager.getSalt();
-        byte[] AEADkey = KeyGenerators.getAEADKey(masterPassword.getBytes(), salt);
-        byte[] Hmackey = KeyGenerators.getHmacKey(masterPassword.getBytes(), salt);
         
         while (true){
             System.out.println("\n\n1 Add new entry\n2 Get password from domain\n");
@@ -32,6 +26,13 @@ public class main {
                     return;
                 }
                 case "1" -> {
+                    System.out.print("Please enter your master password: ");
+                    String masterPassword = in.nextLine();
+                    
+                    FileManager.init();
+                    byte[] salt = FileManager.getSalt();
+                    byte[] AEADkey = KeyGenerators.getAEADKey(masterPassword.getBytes(), salt);
+                    byte[] Hmackey = KeyGenerators.getHmacKey(masterPassword.getBytes(), salt);
                     System.out.print("\nPlease enter domain: ");
                     
                     String domain = in.nextLine();
@@ -77,6 +78,13 @@ public class main {
                     break;
                 }
                 case "2" -> {
+                    System.out.print("Please enter your master password: ");
+                    String masterPassword = in.nextLine();
+                    
+                    FileManager.init();
+                    byte[] salt = FileManager.getSalt();
+                    byte[] AEADkey = KeyGenerators.getAEADKey(masterPassword.getBytes(), salt);
+                    byte[] Hmackey = KeyGenerators.getHmacKey(masterPassword.getBytes(), salt);
                     System.out.print("\nPlease enter domain: ");
                     in = new Scanner(System.in);
                     String domain = in.nextLine();
@@ -105,7 +113,7 @@ public class main {
                         continue;
                     }
                     passDomainDec = KeyManager.removePadding(passDomainDec);
-                    System.out.println(new String(passDomainDec));
+                    System.out.println("Your password: \"" + new String(passDomainDec) + "\"");
                     break;
                 }
                 default -> {
