@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class main {
         
         
         while (true){
-            System.out.println("\n\n1 Add new entry\n2 Get password from domain\n");
+            System.out.println("\n\n1 Add new entry\n2 Get password from domain\n3 Delete entry\n");
             System.out.print("Введите номер действия или exit для выхода: ");
             String protocolStr = in.nextLine();
             switch (protocolStr) {
@@ -115,6 +116,27 @@ public class main {
                     passDomainDec = KeyManager.removePadding(passDomainDec);
                     System.out.println("Your password: \"" + new String(passDomainDec) + "\"");
                     break;
+                }
+                case "3" ->{
+                    FileManager.init();
+                    System.out.print("Please enter your master password: ");
+                    String masterPassword = in.nextLine();
+                    
+                    byte[] salt = FileManager.getSalt();
+                    byte[] Hmackey = KeyGenerators.getHmacKey(masterPassword.getBytes(), salt);
+                    System.out.print("\nPlease enter domain: ");
+                    
+                    String domain = in.nextLine();
+                    System.out.println();
+                    byte[] keyDomain = Gost.HmacFunc(Hmackey, domain.getBytes());
+                    try{
+                        boolean res = FileManager.removeEntry(Utils.bytesToHex(keyDomain), Hmackey);
+                        System.out.println("Delete entry: " + res);
+                    } catch (Exception e) {
+                        System.out.println("Error delete");
+                        e.printStackTrace();
+                    }
+                    
                 }
                 default -> {
                     System.out.print("Неверное значение");

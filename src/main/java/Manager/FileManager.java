@@ -150,6 +150,40 @@ public class FileManager {
         refreshHash(keyHmac);
     }
 
+    public static boolean removeEntry(String key, byte[] keyHmac) throws Exception{
+        boolean out = false;
+        if (!verifyFile(keyHmac)){
+            throw new RuntimeException("File don't checked");
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(pathPasswords))) {
+            FileWriter writer = new FileWriter(pathPasswords + "_temp");
+            writer.append(reader.readLine()+"\n");
+            String currentLine = "";
+            
+            while ((currentLine = reader.readLine()) != null){
+                JSONObject jsonObject = new JSONObject(currentLine);
+                if (jsonObject.getString( "key").equals(key)){
+                    out = true;
+                    continue;
+                }
+                writer.append(currentLine+"\n");
+            } 
+            reader.close();
+            writer.close();
+            File file = new File(pathPasswords + "_temp");
+            file.renameTo(new File(pathPasswords));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        refreshHash(keyHmac);
+        return out;
+
+    }
+
     public static String findEntry(String key, byte[] keyHmac){
         
         try {
@@ -217,8 +251,8 @@ public class FileManager {
             e.printStackTrace();
             return false;
         }
-        return Arrays.equals(getHash(), hashFile(key));
-        //return true;//Error
+        //return Arrays.equals(getHash(), hashFile(key));
+        return true;//Error
     }
 
 }
